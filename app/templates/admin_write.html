@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Write · admin{% endblock %}
+{% block content %}
+<section class="page-head">
+  <a class="back" href="/admin">← admin</a>
+  <h1 class="page-title">Write a post</h1>
+  <p class="lead">Markdown in, live on the site. No redeploy.</p>
+</section>
+<form method="post" action="/admin/write" style="max-width:760px">
+  <label for="title">title</label>
+  <input id="title" name="title" required>
+  <label for="slug">slug (optional, auto from title)</label>
+  <input id="slug" name="slug" placeholder="my-post">
+  <label for="summary">summary</label>
+  <input id="summary" name="summary">
+  <label for="tags">tags (comma separated)</label>
+  <input id="tags" name="tags" placeholder="redis, ai, feature-store">
+  <div style="display:flex;gap:16px">
+    <div style="flex:1"><label for="published_at">date</label><input id="published_at" name="published_at" placeholder="{{ year }}-07-06"></div>
+    <div style="flex:1"><label for="reading_minutes">read (min)</label><input id="reading_minutes" name="reading_minutes" type="number" value="5"></div>
+  </div>
+  <label style="display:flex;flex-direction:row;align-items:center;gap:8px;margin-top:14px"><input type="checkbox" name="draft" style="width:auto"> save as draft (not public yet)</label>
+  <label for="body_md">markdown</label>
+  <textarea id="body_md" name="body_md" style="min-height:340px" required placeholder="## Section&#10;&#10;Your post in Markdown. Fenced code and lists work."></textarea>
+  <button class="btn btn-primary" type="submit" style="margin-top:16px">Publish</button>
+</form>
+{% endblock %}

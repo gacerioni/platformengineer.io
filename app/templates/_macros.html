@@ -1,0 +1,25 @@
+{% macro demo_card(d) %}
+<a class="card" href="/demos/{{ d.slug }}">
+  <div class="card-top">
+    <div class="card-ico" aria-hidden="true"><i class="ti ti-{{ d.icon or 'box' }}"></i></div>
+    <span class="card-flags">
+      {% if d.protected %}<span class="lock-chip" title="password-protected"><i class="ti ti-lock" aria-hidden="true"></i> locked</span>{% endif %}
+      {% if d.links.live %}<span class="live-chip">live ↗</span>{% endif %}
+    </span>
+  </div>
+  <h3>{{ d.title }}</h3>
+  <p>{{ d.tagline }}</p>
+  <div class="tags">{% for t in d.tags %}<span class="tag">{{ t }}</span>{% endfor %}</div>
+  <div class="card-views">{{ d.views }} view{{ 's' if d.views != 1 else '' }}</div>
+</a>
+{% endmacro %}
+
+{% macro post_row(p) %}
+<a class="row" href="/writing/{{ p.slug }}">
+  <span class="row-main">
+    <span class="row-title">{{ p.title }}</span>
+    <span class="row-sum">{{ p.summary }}</span>
+  </span>
+  <span class="row-meta">{{ p.published_at }} · {{ p.reading_minutes }} min · {{ p.views }} views</span>
+</a>
+{% endmacro %}

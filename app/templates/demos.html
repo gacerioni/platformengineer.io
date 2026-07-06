@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import "_macros.html" as ui %}
+{% block title %}Demos · platformengineer.io{% endblock %}
+{% block content %}
+<section class="page-head">
+  <a class="back" href="/">← home</a>
+  <h1 class="page-title">Demos</h1>
+  <p class="lead">Things I have built with Redis and shipped. {{ demos|length }} here, more coming.</p>
+</section>
+<div class="notice heads-up"><i class="ti ti-lock" aria-hidden="true"></i> Some demos call LLMs, so they are password-protected to keep token costs sane. Want a look? <a class="link" href="/contact">ping me for access</a>.</div>
+<div class="tags filter">
+  <a class="tag {% if not active_tag %}active{% endif %}" href="/demos">all</a>
+  {% for t in tags %}<a class="tag {% if t == active_tag %}active{% endif %}" href="/demos?tag={{ t }}">{{ t }}</a>{% endfor %}
+</div>
+<div class="grid">{% for d in demos %}{{ ui.demo_card(d) }}{% endfor %}</div>
+{% endblock %}

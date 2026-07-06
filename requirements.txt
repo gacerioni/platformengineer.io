@@ -1,0 +1,6 @@
+fastapi
+uvicorn>=0.30
+jinja2
+python-multipart
+redis>=5
+markdown-it-py>=3

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% import "_macros.html" as ui %}
+{% block content %}
+<section class="hero">
+  <div class="avatar" aria-hidden="true">
+    <span class="avatar-fallback">GC</span>
+    <img src="/static/img/gabriel.jpg" alt="" onerror="this.remove()">
+  </div>
+  <div class="prompt">$ whoami</div>
+  <h1>Gabriel Cerioni</h1>
+  <div class="kicker">principal solutions architect @ redis</div>
+  <p class="lead">I build real-time systems, AI agents, and feature stores, then ship them to production.</p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="/demos">Explore demos</a>
+    <a class="btn" href="/writing">Read the writing</a>
+    <span class="socials">
+      <a href="https://github.com/gacerioni" aria-label="GitHub"><i class="ti ti-brand-github"></i></a>
+      <a href="https://www.linkedin.com/in/gabrielcerioni/" aria-label="LinkedIn"><i class="ti ti-brand-linkedin"></i></a>
+      <a href="mailto:gacerioni@gmail.com" aria-label="Email"><i class="ti ti-mail"></i></a>
+    </span>
+  </div>
+  <div class="stats">
+    <span class="stat">7.1M ops/sec benchmarked</span>
+    <span class="stat">sub-ms feature stores</span>
+    <span class="stat">agents shipped to production</span>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="section-title">// demos</span><a class="section-link" href="/demos">view all →</a></div>
+  <div class="grid">{% for d in featured %}{{ ui.demo_card(d) }}{% endfor %}</div>
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="section-title">// writing</span><a class="section-link" href="/writing">view all →</a></div>
+  <div class="rows">{% for p in posts %}{{ ui.post_row(p) }}{% endfor %}</div>
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="section-title">// contact</span></div>
+  <p class="lead" style="font-size:18px">Building something with Redis, real-time data, or AI agents? Let's talk.</p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="/contact">Get in touch</a>
+    <a class="btn" href="mailto:gacerioni@gmail.com">gacerioni@gmail.com</a>
+  </div>
+</section>
+{% endblock %}

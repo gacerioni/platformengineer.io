@@ -1,0 +1,11 @@
+services:
+  app:
+    build: .
+    image: platformengineer-io:latest
+    container_name: platformengineer-io
+    restart: unless-stopped
+    env_file: .env
+    # Loopback only: the bastion's existing reverse proxy (Caddy) forwards to this.
+    # Nothing new binds 80/443, so other demos on the box are untouched.
+    ports:
+      - "127.0.0.1:8088:8080"

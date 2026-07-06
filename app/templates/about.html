@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}About · platformengineer.io{% endblock %}
+{% block content %}
+<section class="page-head">
+  <a class="back" href="/">← home</a>
+  <h1 class="page-title">About</h1>
+</section>
+<div class="prose">
+  <p>I'm Gabriel Cerioni, a Principal Solutions Architect at Redis. I design and ship real-time systems: AI agents, online feature stores, hybrid search, and the infrastructure that keeps them fast under load.</p>
+  <p>Most of my work lives at the intersection of Redis and production systems for the largest banks in Latin America, turning ideas into reproducible demos that actually run: agentic assistants with guardrails, fraud feature stores fed by streaming CDC, LLM rate limiting, and cost and sizing tooling.</p>
+  <p>I care about the boring parts that make a demo real: reproducibility, tight latency tails, and clean data topology. If it cannot be rerun from a script, it is an anecdote.</p>
+  <h2>What I work with</h2>
+</div>
+<div class="tags stack">
+  {% for t in ["redis","redis-cloud","redis-streams","redisjson","vector-search","rdi","python","fastapi","docker","caddy","aws","gcp","memtier","llms","rag"] %}<span class="tag">{{ t }}</span>{% endfor %}
+</div>
+<div class="cta-row" style="margin-top:28px">
+  <a class="btn btn-primary" href="/contact">Get in touch</a>
+  <a class="btn" href="/demos">See the demos</a>
+</div>
+{% endblock %}

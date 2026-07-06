@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ p.title }} · platformengineer.io{% endblock %}
+{% block desc %}{{ p.summary }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <a class="back" href="/writing">← writing</a>
+  <h1 class="page-title">{{ p.title }}</h1>
+  <p class="row-meta">{{ p.published_at }} · {{ p.reading_minutes }} min · {{ views }} views</p>
+  <div class="tags" style="margin-top:12px">{% for t in p.tags %}<span class="tag">{{ t }}</span>{% endfor %}</div>
+</section>
+<article class="prose">{{ body_html|safe }}</article>
+{% endblock %}

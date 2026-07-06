@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Admin · platformengineer.io{% endblock %}
+{% block content %}
+<section class="page-head">
+  <a class="back" href="/">← home</a>
+  <h1 class="page-title">Admin</h1>
+  <p class="lead">Your cockpit: write, read contacts, watch the numbers.</p>
+</section>
+<div class="metrics">
+  <div class="metric"><span class="metric-label">demos</span><span class="metric-num">{{ stats.demos }}</span></div>
+  <div class="metric"><span class="metric-label">posts</span><span class="metric-num">{{ stats.posts }}</span></div>
+  <div class="metric"><span class="metric-label">total views</span><span class="metric-num">{{ stats.views }}</span></div>
+  <div class="metric"><span class="metric-label">contacts</span><span class="metric-num">{{ stats.contacts }}</span></div>
+</div>
+<div class="cta-row" style="margin-top:22px">
+  <a class="btn btn-primary" href="/admin/write">Write a post</a>
+  <a class="btn" href="/admin/inbox">Contact inbox ({{ stats.contacts }})</a>
+</div>
+
+<section class="section">
+  <div class="section-head"><span class="section-title">// recent contacts</span><a class="section-link" href="/admin/inbox">all →</a></div>
+  {% if contacts %}
+  <div class="rows">
+    {% for c in contacts %}
+    <div class="row"><span class="row-main"><span class="row-title">{{ c.name }} · {{ c.email }}</span><span class="row-sum">{{ c.message[:120] }}</span></span></div>
+    {% endfor %}
+  </div>
+  {% else %}<p class="row-sum">No contacts yet.</p>{% endif %}
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="section-title">// views</span></div>
+  <div class="rows">
+    {% for d, v in demo_views %}<div class="row"><span class="row-title">demo · {{ d.title }}</span><span class="row-meta">{{ v }} views</span></div>{% endfor %}
+    {% for p, v in post_views %}<div class="row"><span class="row-title">post · {{ p.title }}</span><span class="row-meta">{{ v }} views</span></div>{% endfor %}
+  </div>
+</section>
+{% endblock %}

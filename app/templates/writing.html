@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% import "_macros.html" as ui %}
+{% block title %}Writing · platformengineer.io{% endblock %}
+{% block content %}
+<section class="page-head">
+  <a class="back" href="/">← home</a>
+  <h1 class="page-title">Writing</h1>
+  <p class="lead">Notes on Redis, real-time data, and AI systems.</p>
+</section>
+<div class="rows">{% for p in posts %}{{ ui.post_row(p) }}{% endfor %}</div>
+{% endblock %}

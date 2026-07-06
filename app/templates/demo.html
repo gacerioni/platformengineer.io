@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ d.title }} · platformengineer.io{% endblock %}
+{% block content %}
+<section class="page-head">
+  <a class="back" href="/demos">← demos</a>
+  <div class="demo-head">
+    <div class="card-ico" aria-hidden="true"><i class="ti ti-{{ d.icon or 'box' }}"></i></div>
+    <h1 class="page-title">{{ d.title }}</h1>
+  </div>
+  <p class="lead">{{ d.tagline }}</p>
+  <div class="meta-row">
+    {% if d.status %}<span class="status">{{ d.status }}</span>{% endif %}
+    <span class="tags">{% for t in d.tags %}<a class="tag" href="/demos?tag={{ t }}">{{ t }}</a>{% endfor %}</span>
+  </div>
+</section>
+{% if d.protected %}<div class="notice heads-up"><i class="ti ti-lock" aria-hidden="true"></i> This demo spends LLM tokens, so it is password-protected. <a class="link" href="/contact">Ask me for access.</a></div>{% endif %}
+<div class="prose">{{ description_html|safe }}</div>
+{% if d.links %}
+<div class="cta-row" style="margin-top:24px">
+  {% for label, url in d.links.items() %}<a class="btn {% if label == 'live' %}btn-primary{% endif %}" href="{{ url }}" target="_blank" rel="noopener">{% if label == 'live' %}Open live demo{% else %}{{ label }}{% endif %} ↗</a>{% endfor %}
+</div>
+{% endif %}
+<p class="row-meta viewline">{{ views }} views · tracked in redis</p>
+{% endblock %}

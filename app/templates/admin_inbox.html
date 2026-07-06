@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Inbox · admin{% endblock %}
+{% block content %}
+<section class="page-head">
+  <a class="back" href="/admin">← admin</a>
+  <h1 class="page-title">Contact inbox</h1>
+  <p class="lead">{{ contacts|length }} messages, newest first. Stored in Redis (peio:contact:inbox).</p>
+</section>
+{% if contacts %}
+<div class="rows">
+  {% for c in contacts %}
+  <div class="inbox-item">
+    <div class="inbox-head">
+      <span class="row-title">{{ c.name }}</span>
+      <a class="link" href="mailto:{{ c.email }}">{{ c.email }}</a>
+    </div>
+    <p class="inbox-msg">{{ c.message }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="row-sum">No messages yet.</p>
+{% endif %}
+{% endblock %}

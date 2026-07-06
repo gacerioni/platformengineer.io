@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Gabriel Cerioni · platformengineer.io{% endblock %}</title>
+<meta name="description" content="{% block desc %}Gabriel Cerioni, Principal Solutions Architect at Redis. AI agents, feature stores, and real-time data systems.{% endblock %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<nav class="nav"><div class="wrap nav-inner">
+  <a class="brand" href="/">platformengineer.io</a>
+  <div class="nav-links">
+    {% for label, href in nav %}<a href="{{ href }}">{{ label }}</a>{% endfor %}
+    <a class="nav-social" href="https://github.com/gacerioni" target="_blank" rel="noopener"><i class="ti ti-brand-github" aria-hidden="true"></i><span class="hide-sm">GitHub</span></a>
+    <a class="nav-social" href="https://www.linkedin.com/in/gabrielcerioni/" target="_blank" rel="noopener"><i class="ti ti-brand-linkedin" aria-hidden="true"></i><span class="hide-sm">LinkedIn</span></a>
+    {% if latency >= 0 %}
+    <span class="chip" title="served from redis"><span class="dot"></span>redis · {{ latency }}ms</span>
+    {% else %}
+    <span class="chip offline"><span class="dot"></span>redis offline</span>
+    {% endif %}
+  </div>
+</div></nav>
+<main class="wrap">{% block content %}{% endblock %}</main>
+<footer class="footer wrap">
+  <span>© {{ year }} Gabriel Cerioni</span>
+  <span class="mono" title="Every view is a single Redis INCR, the oldest trick in the book.">{{ "{:,}".format(views_total) }} views · counted in Redis · {{ latency }}ms</span>
+</footer>
+</body>
+</html>
