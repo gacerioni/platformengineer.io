@@ -72,6 +72,9 @@ button.btn{cursor:pointer;font-family:var(--sans)}
 .tags{display:flex;gap:6px;flex-wrap:wrap}
 .tags.filter{margin-bottom:24px}
 .tags.stack{margin-top:8px;max-width:70ch}
+.stack-groups{display:flex;flex-direction:column;gap:18px;max-width:72ch;margin-top:10px}
+.stack-group{display:flex;flex-direction:column;gap:8px}
+.stack-label{font-family:var(--mono);font-size:12px;color:var(--text-mute)}
 .tag{font-family:var(--mono);font-size:11px;color:var(--text-dim);border:1px solid var(--border);background:var(--bg-elev);padding:3px 9px;border-radius:6px;display:inline-flex;align-items:center;gap:6px}
 a.tag:hover{color:var(--accent);border-color:var(--accent-border)}
 .tag.active{color:var(--accent);border-color:var(--accent-border);background:var(--accent-bg)}

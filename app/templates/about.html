@@ -11,8 +11,23 @@
   <p>I care about the boring parts that make a demo real: reproducibility, tight latency tails, and clean data topology. If it cannot be rerun from a script, it is an anecdote.</p>
   <h2>What I work with</h2>
 </div>
-<div class="tags stack">
-  {% for t in ["redis","redis-cloud","redis-streams","redisjson","vector-search","rdi","python","fastapi","docker","caddy","aws","gcp","memtier","llms","rag"] %}<span class="tag">{{ t }}</span>{% endfor %}
+<div class="stack-groups">
+  <div class="stack-group">
+    <span class="stack-label">redis</span>
+    <div class="tags">{% for t in ["redis","redis-cloud","redis-streams","redisjson","vector-search","rdi","langcache"] %}<span class="tag">{{ t }}</span>{% endfor %}</div>
+  </div>
+  <div class="stack-group">
+    <span class="stack-label">ai &amp; agents</span>
+    <div class="tags">{% for t in ["ai","llm","langgraph","rag","agent-memory","context-engineering","guardrails","feature-store"] %}<span class="tag">{{ t }}</span>{% endfor %}</div>
+  </div>
+  <div class="stack-group">
+    <span class="stack-label">cloud &amp; platform</span>
+    <div class="tags">{% for t in ["platform-engineering","aws","gcp","cloud","kubernetes","docker","containers","python","fastapi"] %}<span class="tag">{{ t }}</span>{% endfor %}</div>
+  </div>
+  <div class="stack-group">
+    <span class="stack-label">devops &amp; sre</span>
+    <div class="tags">{% for t in ["devops","sre","observability","apm","harness","ci-cd","memtier"] %}<span class="tag">{{ t }}</span>{% endfor %}</div>
+  </div>
 </div>
 <div class="cta-row" style="margin-top:28px">
   <a class="btn btn-primary" href="/contact">Get in touch</a>
