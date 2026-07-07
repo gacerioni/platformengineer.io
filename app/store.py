@@ -4,7 +4,7 @@ import time
 from typing import List, Optional
 
 from . import seed as seedmod
-from .models import Demo, Event, Post
+from .models import Demo, Event, Lesson, Post
 
 PREFIX = os.getenv("REDIS_PREFIX", "peio:")
 
@@ -140,6 +140,26 @@ class Store:
             pass
         for d in seedmod.seed_demos():
             self.upsert_demo(d)
+
+    # lessons (the Learn series)
+    def upsert_lesson(self, lesson: Lesson):
+        self.r.set(_k("lesson", lesson.slug), json.dumps(lesson.to_dict()))
+        self.r.zadd(_k("lessons", "index"), {lesson.slug: lesson.order})
+
+    def list_lessons(self):
+        out = []
+        for s in self.r.zrange(_k("lessons", "index"), 0, -1):
+            raw = self.r.get(_k("lesson", s))
+            if raw:
+                out.append(Lesson.from_dict(json.loads(raw)))
+        return out
+
+    def sync_lessons(self):
+        for s in self.r.zrange(_k("lessons", "index"), 0, -1):
+            self.r.delete(_k("lesson", s))
+        self.r.delete(_k("lessons", "index"))
+        for lesson in seedmod.seed_lessons():
+            self.upsert_lesson(lesson)
 
     def get_demo(self, slug: str) -> Optional[Demo]:
         raw = self.r.get(_k("demo", slug))

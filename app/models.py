@@ -58,3 +58,19 @@ class Event:
     @classmethod
     def from_dict(cls, d):
         return cls(**d)
+
+
+@dataclass
+class Lesson:
+    slug: str
+    title: str
+    summary: str = ""
+    video_url: str = ""
+    order: int = 0
+
+    def to_dict(self):
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d):
+        return cls(**d)

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Learn · platformengineer.io{% endblock %}
+{% block desc %}A free video series: build a real AI agent with Redis for memory, guardrails, routing, RAG, and semantic cache.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <a class="back" href="/">← home</a>
+  <div class="prompt">$ coming soon</div>
+  <h1 class="page-title">Build a real AI agent with Redis</h1>
+  <p class="lead">A free, hands-on video series. We use Redis for everything an agent needs, context, memory, guardrails, routing, retrieval, and caching, and build a real one end to end. You bring the LLM.</p>
+  <div class="cta-row">
+    <span class="status">free · recording soon</span>
+    <a class="btn" href="{{ workshop_url }}" target="_blank" rel="noopener">Based on the Redis IRIS workshop ↗</a>
+    <a class="btn btn-primary" href="/contact">Get notified</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><span class="section-title">// what we build</span></div>
+  <div class="rows">
+    {% for l in lessons %}
+    <div class="row">
+      <span class="row-main">
+        <span class="row-title">{{ loop.index }}. {{ l.title }}</span>
+        <span class="row-sum">{{ l.summary }}</span>
+      </span>
+      <span class="row-meta">{% if l.video_url %}<a class="link" href="{{ l.video_url }}" target="_blank" rel="noopener">watch ↗</a>{% else %}coming soon{% endif %}</span>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section">
+  <p class="notice heads-up"><i class="ti ti-info-circle" aria-hidden="true"></i> Model-agnostic on purpose: you pick the LLM. The Redis patterns (context, memory, guardrails, routing, RAG, cache) are the point, and they work with any model.</p>
+</section>
+{% endblock %}

@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Tuple
 
-from .models import Demo, Event, Post
+from .models import Demo, Event, Lesson, Post
 
 CONTENT = Path(__file__).resolve().parent / "content"
 
@@ -206,6 +206,24 @@ def seed_demos() -> List[Demo]:
 
 def seed_events() -> List[Event]:
     return []
+
+
+def seed_lessons() -> List[Lesson]:
+    modules = [
+        ("context-surfaces", "Context surfaces",
+         "Give the agent exactly the right data at the right moment, served from Redis."),
+        ("agent-memory", "Agent memory",
+         "Short and long-term memory, so the agent remembers who it is talking to and what happened."),
+        ("semantic-guardrails", "Semantic guardrails",
+         "Block off-topic or unsafe turns by meaning, not by brittle keyword lists."),
+        ("semantic-router", "Semantic router",
+         "Send each request to the right tool or flow based on intent."),
+        ("rag", "RAG",
+         "Ground answers in your own data with retrieval-augmented generation."),
+        ("semantic-cache", "Semantic cache",
+         "Skip the model when a semantically similar question was already answered."),
+    ]
+    return [Lesson(slug=s, title=t, summary=d, order=(i + 1) * 10) for i, (s, t, d) in enumerate(modules)]
 
 
 def _parse_frontmatter(text: str) -> Tuple[dict, str]:

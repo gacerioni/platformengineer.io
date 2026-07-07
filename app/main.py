@@ -23,7 +23,7 @@ app.mount("/static", StaticFiles(directory=str(BASE / "static")), name="static")
 templates = Jinja2Templates(directory=str(BASE / "templates"))
 store = Store()
 
-NAV = [("demos", "/demos"), ("writing", "/writing"), ("about", "/about"), ("contact", "/contact")]
+NAV = [("demos", "/demos"), ("learn", "/learn"), ("writing", "/writing"), ("about", "/about"), ("contact", "/contact")]
 # commonmark preset keeps the typographer off, so no em dashes or curly quotes are introduced.
 _md = MarkdownIt("commonmark")
 
@@ -98,6 +98,7 @@ def notify_contact(name: str, email: str, message: str) -> bool:
 @app.on_event("startup")
 def _startup():
     store.sync_demos()
+    store.sync_lessons()
     store.seed_if_empty()
 
 
@@ -132,6 +133,11 @@ def post_detail(request: Request, slug: str):
         raise HTTPException(status_code=404)
     views = store.incr_views("post", slug)
     return page(request, "post.html", p=p, body_html=render_md(p.body_md), views=views)
+
+
+@app.get("/learn", response_class=HTMLResponse)
+def learn(request: Request):
+    return page(request, "learn.html", lessons=store.list_lessons(), workshop_url="https://redis.io/iris-workshop/")
 
 
 @app.get("/about", response_class=HTMLResponse)
