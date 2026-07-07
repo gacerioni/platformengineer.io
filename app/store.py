@@ -111,9 +111,20 @@ def _connect():
     return MiniRedis(), "dev-memory"
 
 
+def _region() -> str:
+    import re
+    from urllib.parse import urlparse
+
+    url = os.getenv("REDIS_URL") or os.getenv("REDIS_URI") or ""
+    host = urlparse(url).hostname or ""
+    m = re.search(r"([a-z]{2}-[a-z]+-\d+)", host)
+    return m.group(1) if m else ""
+
+
 class Store:
     def __init__(self):
         self.r, self.backend = _connect()
+        self.region = _region()
 
     def ping_ms(self) -> float:
         start = time.perf_counter()

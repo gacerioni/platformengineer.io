@@ -19,7 +19,7 @@
     <a class="nav-social" href="https://github.com/gacerioni" target="_blank" rel="noopener"><i class="ti ti-brand-github" aria-hidden="true"></i><span class="hide-sm">GitHub</span></a>
     <a class="nav-social" href="https://www.linkedin.com/in/gabrielcerioni/" target="_blank" rel="noopener"><i class="ti ti-brand-linkedin" aria-hidden="true"></i><span class="hide-sm">LinkedIn</span></a>
     {% if latency >= 0 %}
-    <span class="chip" title="served from redis"><span class="dot"></span>redis · {{ latency }}ms</span>
+    <span class="chip" title="Live round-trip from the app to Redis Cloud{% if region %} in {{ region }}{% endif %}, over the public internet. The command runs in under a millisecond; the rest is network transit."><span class="dot"></span>redis{% if region %} · {{ region }}{% endif %} · {{ latency }}ms</span>
     {% else %}
     <span class="chip offline"><span class="dot"></span>redis offline</span>
     {% endif %}

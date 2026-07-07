@@ -40,6 +40,7 @@ def base_ctx(**kw):
     data = {
         "latency": store.ping_ms(),
         "backend": store.backend,
+        "region": store.region,
         "nav": NAV,
         "year": datetime.now().year,
         "views_total": store.incr_site_view(),
