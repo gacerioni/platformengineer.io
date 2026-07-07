@@ -27,6 +27,9 @@ NAV = [("demos", "/demos"), ("learn", "/learn"), ("writing", "/writing"), ("abou
 # commonmark preset keeps the typographer off, so no em dashes or curly quotes are introduced.
 _md = MarkdownIt("commonmark")
 
+# Bumped on every process start (i.e. every deploy) to cache-bust static assets.
+ASSET_VER = str(int(datetime.now().timestamp()))
+
 ADMIN_USER = os.getenv("ADMIN_USER", "gabriel")
 ADMIN_PASS = os.getenv("ADMIN_PASS", "")
 _basic = HTTPBasic()
@@ -41,6 +44,7 @@ def base_ctx(**kw):
         "latency": store.ping_ms(),
         "backend": store.backend,
         "region": store.region,
+        "asset_ver": ASSET_VER,
         "nav": NAV,
         "year": datetime.now().year,
         "views_total": store.incr_site_view(),
