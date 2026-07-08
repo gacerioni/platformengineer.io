@@ -1,0 +1,88 @@
+# ============================================================================
+# Fleet Caddyfile — gabs-demos VM (34.136.162.94)
+# Single source of truth for TLS + routing of every *.platformengineer.io demo.
+# This file is versioned; push changes with `make -C deploy/fleet caddy`
+# (which backs up, validates, and reloads on the VM). Never hand-edit on the box.
+#
+# Every backend binds to 127.0.0.1 only — Caddy is the sole public ingress.
+# Let's Encrypt issues/renews certs automatically on first HTTPS hit.
+# ============================================================================
+
+platformengineer.io {
+    encode gzip zstd
+    reverse_proxy 127.0.0.1:8088
+}
+
+www.platformengineer.io {
+    redir https://platformengineer.io{uri} permanent
+}
+
+langcache.platformengineer.io {
+    encode gzip zstd
+    reverse_proxy 127.0.0.1:7860
+}
+
+messaging.platformengineer.io {
+    encode gzip zstd
+    reverse_proxy 127.0.0.1:5000
+}
+
+# Face Auth — FastAPI backend on :8050, Vite build served from disk.
+auth.platformengineer.io {
+    encode gzip zstd
+
+    log {
+        output file /var/log/caddy/face-auth.log
+        format console
+    }
+
+    @api {
+        path /api/* /healthz /docs /openapi.json /redoc
+    }
+    handle @api {
+        reverse_proxy 127.0.0.1:8050 {
+            flush_interval -1
+            transport http {
+                read_timeout 5m
+                write_timeout 5m
+                dial_timeout 10s
+            }
+        }
+    }
+
+    handle {
+        root * /opt/face-auth/dist
+        try_files {path} /index.html
+        file_server
+    }
+
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net https://storage.googleapis.com; worker-src 'self' blob:; frame-ancestors 'none'"
+        -Server
+    }
+}
+
+# Celebrity Face Match — realtime match over WebSocket; SPA + FastAPI + Redis.
+celeb.platformengineer.io {
+    encode gzip
+
+    # Real-time face matching runs entirely over this WebSocket.
+    @ws path /ws
+    handle @ws {
+        reverse_proxy 127.0.0.1:8070
+    }
+
+    # REST endpoints (e.g. /api/stats) -> backend, path preserved.
+    @api path /api/*
+    handle @api {
+        reverse_proxy 127.0.0.1:8070
+    }
+
+    # Everything else -> the React SPA (nginx container).
+    handle {
+        reverse_proxy 127.0.0.1:3090
+    }
+}
