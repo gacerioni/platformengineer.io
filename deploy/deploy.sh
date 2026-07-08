@@ -11,16 +11,17 @@ cd "$ROOT"
 ZONE="${ZONE:-us-central1-a}"
 REMOTE_DIR="${REMOTE_DIR:-platformengineer.io}"
 GCLOUD="${GCLOUD:-gcloud}"
+IAP=""; [ -n "${TUNNEL:-}" ] && IAP="--tunnel-through-iap"
 : "${INSTANCE:?set INSTANCE in .env (the bastion VM name)}"
 : "${PROJECT:?set PROJECT in .env (the GCP project id)}"
 
-ssh_box() { "$GCLOUD" compute ssh --zone "$ZONE" "$INSTANCE" --project "$PROJECT" --command "$1"; }
+ssh_box() { "$GCLOUD" compute ssh --zone "$ZONE" "$INSTANCE" --project "$PROJECT" $IAP --command "$1"; }
 
 echo "==> ensuring remote dir ~/$REMOTE_DIR on $INSTANCE"
 ssh_box "mkdir -p ~/$REMOTE_DIR"
 
 echo "==> copying source (+ .env)"
-"$GCLOUD" compute scp --recurse --zone "$ZONE" --project "$PROJECT" \
+"$GCLOUD" compute scp --recurse $IAP --zone "$ZONE" --project "$PROJECT" \
   Dockerfile docker-compose.yml requirements.txt .dockerignore app .env \
   "$INSTANCE:~/$REMOTE_DIR/"
 
