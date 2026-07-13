@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Rebuild the demos host on a clean, hardened GCP VM.
-# Own VPC (isolated from the shared 'default' network), only 80/443 + IAP SSH,
-# reusing the existing static IP so DNS stays put. Idempotent / re-runnable.
-# Config (PROJECT/ZONE/GCLOUD) comes from ../.env. Needs gcloud auth (owner/editor).
+# Own VPC (isolated from the shared 'default' network), only 80/443 + your-IP SSH.
+# Reserves a LABELED static IP + LABELS the VM so the GCP janitor won't reap them
+# (it deletes resources missing owner=/skip_deletion= — that is what nuked the box).
+# Idempotent / re-runnable. Config (PROJECT/ZONE/GCLOUD/SSH_CIDR) from ../.env.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
@@ -16,12 +17,21 @@ GCLOUD="${GCLOUD:-gcloud}"
 NET="${NET:-gabs-vpc}"
 SUBNET="${SUBNET:-gabs-subnet}"
 VM="${VM:-gabs-demos}"
-STATIC_IP="${STATIC_IP:-34.136.162.94}"   # gabs-demo-workshop-serasa-ip, where DNS points
-OLD_VM="${OLD_VM:-gabs-iris-bank}"         # compromised + stopped; keep its disk for forensics
+ADDR="${ADDR:-gabs-demos-ip}"
+SSH_CIDR="${SSH_CIDR:-189.46.30.176/32}"   # your laptop's egress IP; update when it changes
 MACHINE="${MACHINE:-e2-standard-2}"
+# The GCP janitor deletes untagged VMs. THESE LABELS ARE WHAT KEEP THE BOX ALIVE.
+LABELS="owner=gabriel_cerioni,skip_deletion=yes"
 
 g(){ "$GCLOUD" --project "$PROJECT" "$@"; }
 have(){ "$@" >/dev/null 2>&1; }
+
+echo "==> static IP (labeled so the janitor skips it)"
+have g compute addresses describe "$ADDR" --region "$REGION" \
+  || g compute addresses create "$ADDR" --region "$REGION"
+g compute addresses update "$ADDR" --region "$REGION" --update-labels "$LABELS" >/dev/null 2>&1 || true
+STATIC_IP=$(g compute addresses describe "$ADDR" --region "$REGION" --format="value(address)")
+echo "    IP=$STATIC_IP"
 
 echo "==> VPC + subnet (isolated from the shared default network)"
 have g compute networks describe "$NET" \
@@ -29,25 +39,20 @@ have g compute networks describe "$NET" \
 have g compute networks subnets describe "$SUBNET" --region "$REGION" \
   || g compute networks subnets create "$SUBNET" --network "$NET" --region "$REGION" --range 10.10.0.0/24
 
-echo "==> firewall: internet only on 80/443, SSH only via IAP (35.235.240.0/20)"
+echo "==> firewall: internet on 80/443, SSH only from your IP ($SSH_CIDR)"
 have g compute firewall-rules describe gabs-allow-web \
   || g compute firewall-rules create gabs-allow-web --network "$NET" --direction INGRESS \
        --action ALLOW --rules tcp:80,tcp:443 --source-ranges 0.0.0.0/0 --target-tags gabs-demos
-have g compute firewall-rules describe gabs-allow-iap-ssh \
-  || g compute firewall-rules create gabs-allow-iap-ssh --network "$NET" --direction INGRESS \
-       --action ALLOW --rules tcp:22 --source-ranges 35.235.240.0/20 --target-tags gabs-demos
+have g compute firewall-rules describe gabs-allow-ssh-me \
+  || g compute firewall-rules create gabs-allow-ssh-me --network "$NET" --direction INGRESS \
+       --action ALLOW --rules tcp:22 --source-ranges "$SSH_CIDR" --target-tags gabs-demos
+g compute firewall-rules update gabs-allow-ssh-me --source-ranges "$SSH_CIDR" >/dev/null 2>&1 || true
 
-echo "==> free the static IP from the old (stopped) VM, keeping its disk for forensics"
-if have g compute instances describe "$OLD_VM" --zone "$ZONE"; then
-  g compute instances delete-access-config "$OLD_VM" --zone "$ZONE" --access-config-name "External NAT" 2>/dev/null \
-    || g compute instances delete-access-config "$OLD_VM" --zone "$ZONE" --access-config-name "external-nat" 2>/dev/null \
-    || echo "   (nothing to detach, or already freed)"
-fi
-
-echo "==> create the hardened VM, reattaching the static IP"
+echo "==> create the hardened, LABELED VM with the static IP"
 have g compute instances describe "$VM" --zone "$ZONE" || g compute instances create "$VM" \
   --zone "$ZONE" --machine-type "$MACHINE" \
   --network "$NET" --subnet "$SUBNET" --address "$STATIC_IP" --tags gabs-demos \
+  --labels "$LABELS" \
   --image-family debian-12 --image-project debian-cloud \
   --boot-disk-size 40GB --boot-disk-type pd-balanced \
   --metadata=startup-script='#!/bin/bash
@@ -63,5 +68,5 @@ if ! command -v caddy >/dev/null; then
 fi'
 
 echo
-echo "==> done. VM=$VM  IP=$STATIC_IP  net=$NET  (only 80/443 + IAP SSH; Docker+Caddy install on first boot)"
-echo "    then deploy the site with:  INSTANCE=$VM TUNNEL=1 bash deploy/deploy.sh"
+echo "==> done. VM=$VM  IP=$STATIC_IP  net=$NET  labels=[$LABELS]"
+echo "    (only 80/443 + SSH from $SSH_CIDR; Docker+Caddy install on first boot)"
