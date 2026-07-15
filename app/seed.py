@@ -76,7 +76,7 @@ def seed_demos() -> List[Demo]:
                 "model again. Drop-in in front of any LLM app."
             ),
             tags=["llm", "semantic-cache", "redis"],
-            links={"live": "https://langcache.platformengineer.io/"},
+            links={"live": "https://langcache.platformengineer.io/", "video": "https://youtu.be/Ykf69qIxp24"},
             status="live",
             icon="bolt",
             featured=True,
